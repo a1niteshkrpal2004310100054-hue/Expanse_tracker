@@ -53,9 +53,9 @@ const Expense = () => {
             </div>
           </div>
         </nav>
-        <main>
+        <div className="flex flex-1 ">
           {loading ? <p>loading...</p> : <Expansetable data={data} />}
-        </main>
+        </div>
       </section>
     </>
   );

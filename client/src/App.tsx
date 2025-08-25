@@ -8,6 +8,7 @@ import { ProtectedRoutes } from "./lib/protectedRoute";
 import Expense from "./pages/Expanse/Expense";
 import Groups from "@/pages/Groups";
 import GroupExpenses from "./pages/Groups/groupExpenses";
+import Report from "./pages/Report";
 
 const App = () => {
   return (
@@ -27,13 +28,14 @@ const App = () => {
           }
         >
           <Route>
-            <Route path="/home" element={<HomePage />} />
+            <Route index element={<HomePage />} />
             <Route path="/expense" element={<Expense />} />
             <Route path="/groups" element={<Groups />} />
             <Route
               path="/groups-expenses/:groupId"
               element={<GroupExpenses />}
             />
+            <Route path="/report" element={<Report />} />
           </Route>
         </Route>
       </Routes>

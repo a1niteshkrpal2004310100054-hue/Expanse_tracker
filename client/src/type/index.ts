@@ -68,6 +68,7 @@ export interface SplitForm {
 
 // for single Schema
 export interface NormalExpanse {
+  createdAt: string | number | Date;
   _id: string;
   title: string;
   amount: number;
@@ -118,10 +119,21 @@ export interface Table {
   description: string;
   paymentMethod: string;
   createdBy?: string;
-  createdAt?: string;
+  createdAt?: string | number | Date;
   updatedA?: string;
 }
 
 export type childHandle = {
   getSelectedIds: () => number;
+};
+
+// for Generate Monthly data
+export type MonthlyGroupItem = {
+  getMonth: string;
+  category: string;
+  totalAmount: number;
+};
+
+export type MonthlyGroup = {
+  [key: string]: MonthlyGroupItem;
 };

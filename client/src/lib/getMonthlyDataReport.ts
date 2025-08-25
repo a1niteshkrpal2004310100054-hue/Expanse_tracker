@@ -1,6 +1,8 @@
-import { formatDate } from "./date";
+import type { NormalExpanse } from "@/type/index";
+import type { MonthlyGroup } from "@/type/index";
 
-const month = [
+export function getMonthlyDataReport(expenses: NormalExpanse[]) {
+  const month = [
     "Jan",
     "Feb",
     "Mar",
@@ -14,15 +16,21 @@ const month = [
     "Nov",
     "Dec",
   ];
-
-function getMonthlyDataReport(expenses) {
-  const monthlyReport = {};
-
-  for (let items of expenses) {
-    const date = new Date(items.createdAt);
-    const getMonth = month[date.getMonth()]
-    const category = items.category;
-
-    if(!monthlyReport[getMonth]) 
-  }
+  const monthlyGrouped: MonthlyGroup = {};
+  expenses.forEach((expense) => {
+    const date = new Date(expense.createdAt);
+    const getMonth = month[date.getMonth()];
+    const category = expense.category;
+    const key = `${getMonth}-${category}`;
+    if (!monthlyGrouped[key]) {
+      monthlyGrouped[key] = {
+        getMonth,
+        category,
+        totalAmount: 0,
+      };
+    }
+    monthlyGrouped[key].totalAmount += expense.amount;
+  });
+  const result = Object.values(monthlyGrouped);
+  return Object.values(result);
 }

@@ -1,9 +1,15 @@
-import { Home, Calculator, Group, ReceiptIndianRupee } from "lucide-react";
+import {
+  Home,
+  Calculator,
+  Group,
+  ReceiptIndianRupee,
+  ClipboardPlus,
+} from "lucide-react";
 
 const navItems = [
   {
     name: "Home",
-    url: "/home",
+    url: "/",
     icon: Home,
   },
   {
@@ -20,6 +26,11 @@ const navItems = [
     name: "Budget",
     url: "#",
     icon: Calculator,
+  },
+  {
+    name: "Report",
+    url: "/report",
+    icon: ClipboardPlus,
   },
 ];
 

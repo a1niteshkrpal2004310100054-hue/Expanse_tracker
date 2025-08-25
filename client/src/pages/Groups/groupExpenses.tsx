@@ -82,7 +82,7 @@ function GroupExpenses() {
 
           <div className="w-1/2 flex flex-col gap-2">
             <div className="flex-1 bg-gray-800 p-6">
-              <DoughnutChart />
+              {/* <DoughnutChart /> */}
             </div>
             {/* <div className="flex-1 bg-gray-800">
               <DoughnutChart />

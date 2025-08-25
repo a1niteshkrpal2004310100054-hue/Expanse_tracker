@@ -73,6 +73,10 @@ export function SingleExpense({
     }
   };
 
+  const handleReset = () => {
+    reset();
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="bg-gray-800">
@@ -113,7 +117,11 @@ export function SingleExpense({
         </form>
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant="outline" className="text-black">
+            <Button
+              variant="outline"
+              className="text-black"
+              onClick={() => handleReset()}
+            >
               Cancel
             </Button>
           </DialogClose>

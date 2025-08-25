@@ -8,13 +8,13 @@ const Layout = () => {
     <>
       <section className="w-full h-screen flex justify-center items-center bg-gray-800">
         {/* sidebar */}
-        <div className="w-[20%] flex-wrap h-full bg-gray-800">
+        <div className="w-[20%] flex-wrap h-full bg-gray-800 overflow-auto">
           <Avatar />
           <AppSidebar />
         </div>
         {/* main
          */}
-        <div className="w-[80%] h-[95%] flex-wrap bg-black rounded-[0.5rem] m-6 p-2">
+        <div className="w-[80%] h-[95%] flex-wrap bg-black rounded-[0.5rem] m-6 p-2 overflow-auto">
           {/* <Navbar /> */}
           <Outlet />
         </div>

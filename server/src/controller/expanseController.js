@@ -125,4 +125,67 @@ export const deleteExpense = async (req, res) => {
   }
 };
 
-// export const getMonthlyDataByCategory = async(req, res);
+export const generateReport = async (req, res) => {
+  const { month, year, category, isYearly } = req.body;
+  const userId = req.user.userId;
+  try {
+    console.log("data", month, year, category, isYearly);
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized User" });
+    }
+
+    const startDate = new Date(year, month - 1, 1);
+
+    const endDate = new Date(year, month, 1);
+
+    const matchStage = {
+      createdAt: { $gte: startDate, $lt: endDate },
+      createdBy: userId,
+    };
+
+    console.log(matchStage);
+
+    if (category && category !== "all") {
+      matchStage.category = category;
+    }
+
+    const summaryPipeline = [
+      { $match: matchStage },
+      {
+        $group: {
+          _id: "$category",
+          totalAmount: { $sum: "$amount" },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          category: "$_id",
+          totalAmount: 1,
+          count: 1,
+          _id: 0,
+        },
+      },
+      { $sort: { totalAmount: -1 } },
+    ];
+
+    const monthlyexpanse = await NormalExpanse.find(matchStage).sort({
+      createdAt: -1,
+    });
+
+    console.log(monthlyexpanse);
+    const [summary, expanses] = await Promise.all([
+      NormalExpanse.aggregate(summaryPipeline),
+      monthlyexpanse,
+    ]);
+
+    return res.status(200).json({
+      message: `${isYearly ? "yearly" : "monthly"} expense populated`,
+      summary,
+      expanses,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};

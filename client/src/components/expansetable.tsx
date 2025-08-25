@@ -217,10 +217,11 @@ const Expansetable = ({ data }: { data: Table[] }) => {
     getSortedRowModel: getSortedRowModel(),
   });
 
-  const selectedIds = table
-    .getFilteredSelectedRowModel()
-    .rows.map((row) => row.original._id);
-  console.log(selectedIds);
+  // delet method for selected Ids
+  // const selectedIds = table
+  //   .getFilteredSelectedRowModel()
+  //   .rows.map((row) => row.original._id);
+  // console.log(selectedIds);
 
   return (
     <>

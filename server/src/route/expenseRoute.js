@@ -9,6 +9,8 @@ import {
   createIndividualExpense,
   getExpanse,
   editExpanse,
+  deleteExpense,
+  generateReport,
 } from "../controller/expanseController.js";
 import { isAuthenticated } from "../middleware/authMiddleware.js";
 
@@ -18,6 +20,8 @@ const router = Router();
 router.post("/single-expense", isAuthenticated, createIndividualExpense);
 router.get("/get-single-expense", isAuthenticated, getExpanse);
 router.patch("/edit-expanse/:id", isAuthenticated, editExpanse);
+router.delete("/delete-expanse/:id", isAuthenticated, deleteExpense);
+router.post("/generate-report", isAuthenticated, generateReport);
 // for split
 router.post("/create-group", isAuthenticated, createGroup);
 router.post("/split-expense", isAuthenticated, createSplitExpense);
