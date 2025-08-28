@@ -1,6 +1,6 @@
 import {
   Home,
-  Calculator,
+  // Calculator,
   Group,
   ReceiptIndianRupee,
   ClipboardPlus,
@@ -22,11 +22,11 @@ const navItems = [
     url: "/groups",
     icon: Group,
   },
-  {
-    name: "Budget",
-    url: "#",
-    icon: Calculator,
-  },
+  // {
+  //   name: "Budget",
+  //   url: "#",
+  //   icon: Calculator,
+  // },
   {
     name: "Report",
     url: "/report",

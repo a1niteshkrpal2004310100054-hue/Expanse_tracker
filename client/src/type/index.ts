@@ -19,7 +19,7 @@ export interface GroupItem {
 }
 
 export interface PaidBy {
-  id: string;
+  _id: string;
   name: string;
   email?: string;
 }
@@ -115,9 +115,10 @@ export interface Table {
   _id?: string;
   title: string;
   amount: number;
+  totalAmount?: string;
   category: string;
-  description: string;
-  paymentMethod: string;
+  description?: string;
+  paymentMethod?: string;
   createdBy?: string;
   createdAt?: string | number | Date;
   updatedA?: string;

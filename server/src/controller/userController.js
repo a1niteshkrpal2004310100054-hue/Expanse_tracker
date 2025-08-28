@@ -7,14 +7,14 @@ const generateAccessToken = (userId) => {
   if (!SECRET) {
     console.log("Access Token is missing in env");
   }
-  return jwt.sign({ userId }, SECRET, { expiresIn: "2d" });
+  return jwt.sign({ userId }, SECRET, { expiresIn: "2h" });
 };
 const generateRefreshToken = (userId) => {
   const SECRET = process.env.REFRESH_TOKEN_SECRET;
   if (!SECRET) {
     console.log("Access Token is missing in env");
   }
-  return jwt.sign({ userId }, SECRET, { expiresIn: "2h" });
+  return jwt.sign({ userId }, SECRET, { expiresIn: "7d" });
 };
 
 export const register = async (req, res) => {
@@ -70,7 +70,7 @@ export const userLogin = async (req, res) => {
       httpOnly: true,
       sameSite: "lax",
       strict: true,
-      maxAge: 10 * 24 * 60 * 60,
+      maxAge: 10 * 24 * 60 * 60 * 1000,
     });
 
     return res.status(200).json({ message: "User loggedin", accesToken });
@@ -87,5 +87,49 @@ export const userLogOut = async (_, res) => {
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const getUser = async (req, res) => {
+  const userId = req.user.userId;
+
+  if (!userId) {
+    return res.status(404).json({ message: "User not found" });
+  }
+  try {
+    const user = await User.findById(userId).select("-password");
+    return res.status(200).json({ message: "Accepted", user });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const refresh = async (req, res) => {
+  const token = req.cookie("refreshToken");
+  try {
+    if (!token) {
+      return res.status().json({ message: "Token is missing" });
+    }
+
+    jwt.verify(token, process.env.REFRESH_TOKEN_SECRET, (error, payload) => {
+      if (error) {
+      }
+
+      const accessToken = generateAccessToken(payload.userId);
+      const refreshToken = generateRefreshToken(payload.userId);
+
+      res.cookie(refreshToken, {
+        httpOnly: true,
+        sameSite: "lax",
+        strict: true,
+        maxAge: 10 * 24 * 60 * 60 * 1000,
+      });
+
+      res.json(accessToken);
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(401).json({ message: "Internal server error" });
   }
 };

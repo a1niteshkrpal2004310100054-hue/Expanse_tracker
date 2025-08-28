@@ -1,5 +1,8 @@
+import { useUser } from "@/context/AuthContext";
+
 function Avatar() {
   const defaultImage = "/vite.svg";
+  const { user } = useUser();
   return (
     <>
       <div className="w-full flex flex-col justify-center items-center gap-2 pt-4 pb-6">
@@ -11,7 +14,7 @@ function Avatar() {
           />
         </div>
         <span className="text-2xl font-sans font-semibold capitalize text-white">
-          Expanse User
+          {user?.name}
         </span>
       </div>
     </>

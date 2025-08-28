@@ -1,3 +1,4 @@
+import { SelectPortal } from "@radix-ui/react-select";
 import {
   Select,
   SelectContent,
@@ -49,19 +50,21 @@ export const DropDown = ({ data, value, onChange }: DropDownProps) => {
         <SelectTrigger className="w-full">
           <SelectValue placeholder="select" className="text-white" />
         </SelectTrigger>
-        <SelectContent className=" bg-gray-800 capitalize">
-          <SelectGroup>
-            {data?.map((data, index) => (
-              <SelectItem
-                key={index}
-                value={data}
-                className="capitalize text-white"
-              >
-                {data}
-              </SelectItem>
-            ))}
-          </SelectGroup>
-        </SelectContent>
+        <SelectPortal container={document.getElementById("dialog-portal-root")}>
+          <SelectContent className=" bg-gray-800 capitalize">
+            <SelectGroup>
+              {data?.map((data, index) => (
+                <SelectItem
+                  key={index}
+                  value={data}
+                  className="capitalize text-white"
+                >
+                  {data}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </SelectPortal>
       </Select>
     </>
   );

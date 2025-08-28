@@ -1,7 +1,5 @@
-import { User } from "../model/userModel.js";
-import { Participent } from "../model/participentSchema.js";
-import { Groups } from "../model/groupModel.js";
 import { NormalExpanse } from "../model/singleExpanseModel.js";
+import mongoose from "mongoose";
 
 // create Expanse
 export const createIndividualExpense = async (req, res) => {
@@ -101,16 +99,19 @@ export const editExpanse = async (req, res) => {
 
 export const deleteExpense = async (req, res) => {
   const userId = req.user.userId;
-  const expenseId = req.params.id;
+  const { expenseId } = req.body;
   try {
+    console.log("expenseID", expenseId);
     if (!userId) {
-      return res.statue(401).json({ message: "Unauthorized User" });
+      return res.status(401).json({ message: "Unauthorized User" });
     }
     if (!expenseId) {
-      return res.statue(404).json({ message: "ExpenseId is required" });
+      return res.status(404).json({ message: "ExpenseId is required" });
     }
 
-    const deleteExpense = await NormalExpanse.findByIdAndDelete(expenseId);
+    const deleteExpense = await NormalExpanse.deleteMany({
+      _id: { $in: expenseId },
+    });
 
     if (!deleteExpense) {
       return res
@@ -129,7 +130,6 @@ export const generateReport = async (req, res) => {
   const { month, year, category, isYearly } = req.body;
   const userId = req.user.userId;
   try {
-    console.log("data", month, year, category, isYearly);
     if (!userId) {
       return res.status(401).json({ message: "Unauthorized User" });
     }
@@ -140,10 +140,8 @@ export const generateReport = async (req, res) => {
 
     const matchStage = {
       createdAt: { $gte: startDate, $lt: endDate },
-      createdBy: userId,
+      createdBy: new mongoose.Types.ObjectId(userId),
     };
-
-    console.log(matchStage);
 
     if (category && category !== "all") {
       matchStage.category = category;
@@ -173,7 +171,6 @@ export const generateReport = async (req, res) => {
       createdAt: -1,
     });
 
-    console.log(monthlyexpanse);
     const [summary, expanses] = await Promise.all([
       NormalExpanse.aggregate(summaryPipeline),
       monthlyexpanse,

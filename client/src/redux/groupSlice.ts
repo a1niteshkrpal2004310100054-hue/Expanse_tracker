@@ -38,6 +38,11 @@ export const groupSlice = createSlice({
     //   );
     //   console.log(state.totalAmount);
     // },
+    deleteGroupExpense: (state, action: PayloadAction<string>) => {
+      state.groupExpanse = state.groupExpanse.filter(
+        (expense) => expense._id != action.payload
+      );
+    },
   },
 });
 
@@ -47,5 +52,6 @@ export const {
   getGroupExpanse,
   addGroupExpanse,
   getNewGroup,
+  deleteGroupExpense,
 } = groupSlice.actions;
 export default groupSlice.reducer;

@@ -14,6 +14,7 @@ import {
   DialogTitle,
   DialogFooter,
   DialogClose,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { DropDown } from "@/components/select";
 import type { SIngleInputs, SingleExpenseProps } from "@/type";
@@ -42,6 +43,15 @@ export function SingleExpense({
       reset(expense);
     }
   }, [expense, reset, mode]);
+
+  // useEffect(() => {
+  //   if (open) {
+  //     requestAnimationFrame(() => {
+  //       const el = document.getElementById("title");
+  //       el?.focus();
+  //     });
+  //   }
+  // }, [open]);
 
   const data: string[] = [
     "Food & Groceries",
@@ -79,10 +89,11 @@ export function SingleExpense({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-gray-800">
+      <DialogContent className="bg-gray-800 data-[state=open]:animate-none data-[state=closed]:animate-none transition-none">
         <DialogHeader>
           <DialogTitle>{mode === "edit" ? "Edit Expense" : name}</DialogTitle>
         </DialogHeader>
+        <DialogDescription className="hidden" />
         <form
           className="space-y-2"
           onSubmit={handleSubmit(onSubmit)}
@@ -129,6 +140,7 @@ export function SingleExpense({
             Save changes
           </Button>
         </DialogFooter>
+        <div id="dialog-portal-root" />
       </DialogContent>
     </Dialog>
   );

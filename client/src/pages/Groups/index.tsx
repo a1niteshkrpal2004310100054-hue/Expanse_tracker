@@ -48,7 +48,7 @@ const Groups = () => {
     }
   };
 
-  console.log(select);
+  // console.log(select);
   return (
     <>
       <section>

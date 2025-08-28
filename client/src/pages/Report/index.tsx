@@ -11,6 +11,7 @@ import {
   DialogTitle,
   DialogFooter,
   DialogClose,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { DropDown } from "@/components/select";
 import type { ReportForm } from "@/type/report";
@@ -18,10 +19,14 @@ import Expansetable from "@/components/expansetable";
 import { api } from "@/lib/api";
 import toast from "react-hot-toast";
 import { converToCSV } from "@/lib/convertToCSV";
+import type { ColumnDef } from "@tanstack/react-table";
+import type { Table } from "@/type";
+import { formatDate } from "@/lib/date";
 
 const Report = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [reportData, setReportData] = useState([]);
+  const [summaryData, setSummaryData] = useState([]);
 
   const handleClick = () => {
     setOpen(!open);
@@ -54,8 +59,8 @@ const Report = () => {
     };
     try {
       const res = await api.post(`/expense/generate-report`, payload);
-      // console.log(res.data);
       setReportData(res.data.expanses);
+      setSummaryData(res.data.summary);
       toast.success(res.data.message);
     } catch (error) {
       console.error(error);
@@ -76,7 +81,70 @@ const Report = () => {
     document.body.removeChild(link);
   };
 
- 
+  const columns: ColumnDef<Table>[] = [
+    {
+      id: "rowsNumber",
+      header: "Id",
+      cell: ({ row }) => <div>{row.index + 1}</div>,
+    },
+    {
+      accessorKey: "category",
+      header: "Category",
+      cell: ({ row }) => (
+        <div className="capitalize">{row.getValue("category")}</div>
+      ),
+    },
+    {
+      accessorKey: "title",
+      header: "Title",
+      cell: ({ row }) => (
+        <div className="capitalize">{row.getValue("title")}</div>
+      ),
+    },
+    {
+      accessorKey: "amount",
+      header: "Amount",
+      cell: ({ row }) => (
+        <div className="capitalize ">{row.getValue("amount")}</div>
+      ),
+    },
+    {
+      accessorKey: "createdAt",
+      header: "CreatedAt",
+      cell: ({ row }) => {
+        const rowDate: string = row.getValue("createdAt");
+        return <div>{formatDate(rowDate)}</div>;
+      },
+    },
+  ];
+
+  const sunColumns: ColumnDef<Table>[] = [
+    {
+      id: "rowsNumber",
+      header: "Id",
+      cell: ({ row }) => <div>{row.index + 1}</div>,
+    },
+    {
+      accessorKey: "category",
+      header: "Category",
+      cell: ({ row }) => (
+        <div className="capitalize">{row.getValue("category")}</div>
+      ),
+    },
+    {
+      accessorKey: "totalAmount",
+      header: "Total Amount",
+      cell: ({ row }) => (
+        <div className="capitalize ">{row.getValue("totalAmount")}</div>
+      ),
+    },
+    {
+      accessorKey: "count",
+      header: "Count",
+      cell: ({ row }) => <div>{row.getValue("count")}</div>,
+    },
+  ];
+
   return (
     <section>
       <nav className="w-full h-14 bg-gray-800 px-4">
@@ -96,6 +164,10 @@ const Report = () => {
             <DialogHeader>
               <DialogTitle>Generate Report Form</DialogTitle>
             </DialogHeader>
+            <DialogDescription>
+              This action cannot be undone. It will permanently delete your
+              item.
+            </DialogDescription>
             <form
               onSubmit={handleSubmit(onSubmit)}
               id="report-form"
@@ -151,8 +223,14 @@ const Report = () => {
         </Dialog>
 
         {/* Data Table */}
-
-        <Expansetable data={reportData} />
+        <div>
+          <p className="text-xl">Expanse Report Table</p>
+          <Expansetable data={reportData} columns={columns} />
+        </div>
+        <div>
+          <p className="text-xl">Summary Report Table</p>
+          <Expansetable data={summaryData} columns={sunColumns} />
+        </div>
       </div>
     </section>
   );

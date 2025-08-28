@@ -9,6 +9,7 @@ import Expense from "./pages/Expanse/Expense";
 import Groups from "@/pages/Groups";
 import GroupExpenses from "./pages/Groups/groupExpenses";
 import Report from "./pages/Report";
+import { AuthProvider } from "@/context/AuthContext";
 
 const App = () => {
   return (
@@ -23,7 +24,9 @@ const App = () => {
           path="/"
           element={
             <ProtectedRoutes>
-              <Layout />
+              <AuthProvider>
+                <Layout />
+              </AuthProvider>
             </ProtectedRoutes>
           }
         >

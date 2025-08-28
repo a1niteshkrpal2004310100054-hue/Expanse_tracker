@@ -24,10 +24,15 @@ export const singleSlice = createSlice({
         state.expenses[index] = action.payload;
       }
     },
+    deleteExpense: (state, action: PayloadAction<string[]>) => {
+      state.expenses = state.expenses.filter(
+        (expense) => !action.payload.includes(expense._id)
+      );
+    },
   },
 });
 
-export const { setExpanse, addCreatedExpanse, updateExpense } =
+export const { setExpanse, addCreatedExpanse, updateExpense, deleteExpense } =
   singleSlice.actions;
 
 export default singleSlice.reducer;

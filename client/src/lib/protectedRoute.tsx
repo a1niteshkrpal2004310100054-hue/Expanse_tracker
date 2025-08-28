@@ -8,7 +8,7 @@ interface protectedRoutes {
 
 export const ProtectedRoutes: React.FC<protectedRoutes> = ({ children }) => {
   const user: string | null = localStorage.getItem("authToken");
-  if (!isValid(user) && !user) {
+  if (!isValid(user)) {
     localStorage.removeItem("authToken");
     return <Navigate to="/login" replace />;
   }

@@ -24,9 +24,12 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        const response = await axios.get("http://localhost:3000/api/refresh", {
-          withCredentials: true,
-        });
+        const response = await axios.get(
+          "http://localhost:3000/api/user/refresh",
+          {
+            withCredentials: true,
+          }
+        );
 
         const token = response.data.accessToken;
         localStorage.setItem("authToken", token);
@@ -36,7 +39,8 @@ api.interceptors.response.use(
         return axios(originalRequest);
       } catch (error) {
         console.error("Token refresh failed", error);
-
+        localStorage.removeItem("authToken");
+        window.location.href = "/login";
         return Promise.reject(error);
       }
     }

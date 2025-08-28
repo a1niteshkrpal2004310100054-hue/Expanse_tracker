@@ -3,6 +3,7 @@ import { Participent } from "../model/participentSchema.js";
 import { Expense } from "../model/expenseModel.js";
 import { User } from "../model/userModel.js";
 import crypto from "crypto";
+import mongoose from "mongoose";
 
 export const createGroup = async (req, res) => {
   const { title, participents } = req.body;
@@ -74,7 +75,7 @@ export const createGroup = async (req, res) => {
 };
 
 export const createSplitExpense = async (req, res) => {
-  const { title, amount, paidBy, participents, group, split } = req.body;
+  const { title, amount, paidBy, participents, group } = req.body;
   const userId = req.user.userId;
 
   if (!title || !amount || !paidBy) {
@@ -89,33 +90,39 @@ export const createSplitExpense = async (req, res) => {
     const splitAmount = amount / participents.length;
 
     const splitBetween = participents.map((participentsId) => ({
-      participents: participentsId._id,
+      participents: participentsId,
       share: Number(splitAmount.toFixed(2)),
     }));
 
-    const currentUser = await User.findById(userId);
-    const ispaidByUser = String(paidBy) === String(currentUser._id);
-
+    // Extract the current user participent
     const currentUserParticipant = await Participent.findOne({
       linkedUserId: userId,
       groupId: group,
     });
 
-    const isPaidByCurrentUser =
-      currentUserParticipant &&
-      String(paidBy) === String(currentUserParticipant._id);
+    let paidById;
 
-    // console.log("debug", currentUserParticipant, isPaidByCurrentUser);
+    if (paidBy) {
+      const paidByParticipent = await Participent.findOne({
+        _id: paidBy,
+        groupId: group,
+      });
+
+      paidById = paidByParticipent;
+    } else {
+      paidById = currentUserParticipant;
+    }
 
     const expense = await Expense.create({
       title,
       amount: Number(amount),
-      paidBy,
-      paidByModel: isPaidByCurrentUser ? "User" : "Participent",
+      paidBy: paidById,
+      paidByModel: "Participent",
       group,
       participents,
       splitBetween,
       isShared: participents.length > 1,
+      createdBy: userId,
     });
     await expense.save();
 
@@ -123,7 +130,7 @@ export const createSplitExpense = async (req, res) => {
       .populate("participents")
       .populate({
         path: "paidBy",
-        select: "name email",
+        select: "name email status linkedUserId isRegistered",
       });
     return res
       .status(200)
@@ -190,5 +197,32 @@ export const getSplitExpanse = async (req, res) => {
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+export const deleteGroupExpanse = async (req, res) => {
+  const userId = req.user.userId;
+  const { expenseId } = req.body;
+  try {
+    console.log("expenseID", expenseId);
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized User" });
+    }
+    if (!expenseId) {
+      return res.status(404).json({ message: "ExpenseId is required" });
+    }
+
+    const deletedExpense = await Expense.deleteOne({ _id: expenseId });
+
+    if (!deletedExpense) {
+      return res
+        .status(400)
+        .json({ message: "Requested expense is not found" });
+    }
+
+    return res.status(200).json({ message: "Expense deleted", deletedExpense });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };

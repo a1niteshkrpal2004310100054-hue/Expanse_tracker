@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import { type } from "os";
 
 const expensSchema = new Schema(
   {
@@ -12,7 +13,7 @@ const expensSchema = new Schema(
     paidByModel: {
       type: String,
       required: true,
-      enum: ["User", "Participent"],
+      enum: ["Participent"],
     },
     group: {
       type: mongoose.Schema.Types.ObjectId,
@@ -41,6 +42,9 @@ const expensSchema = new Schema(
     isShared: {
       type: Boolean,
       default: false,
+    },
+    craetedBy: {
+      type: String,
     },
   },
   { timestamps: true }

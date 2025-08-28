@@ -7,5 +7,6 @@ export function isValid(token: string | null) {
     return payload.exp && payload.exp > now;
   } catch (error) {
     console.error(error);
+    return false;
   }
 }

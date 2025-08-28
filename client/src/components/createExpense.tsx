@@ -16,6 +16,7 @@ import {
   DialogTrigger,
   DialogFooter,
   DialogClose,
+  DialogDescription,
 } from "@/components/ui/dialog";
 
 type Participents = {
@@ -84,6 +85,9 @@ const Create = () => {
           <DialogHeader>
             <DialogTitle>Create Expanse</DialogTitle>
           </DialogHeader>
+          <DialogDescription className="text-red-300">
+            Current user already selected as participents.
+          </DialogDescription>
           <div>
             <form
               onSubmit={handleSubmit(onSubmit)}
